@@ -1,0 +1,6 @@
+app:
+    rest:
+        posts:
+            base-url: https://jsonplaceholder.typicode.com/
+            endpoint: posts
+
