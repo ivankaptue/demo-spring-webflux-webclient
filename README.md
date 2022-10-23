@@ -2,18 +2,30 @@
 
 ### Webclient
 
-- [ ] Get all resources
-- [ ] Get one resource (Path parameter)
-- [ ] Post
-- [ ] Put
-- [ ] Patch
-- [ ] Delete
-- [ ] Delete
-- [ ] Query parameters
-- [ ] Retryable
-- [ ] Timeout
+To test `WebClient` we use [jsonplaceholder](https://jsonplaceholder.typicode.com/guide/) posts
+endpoint (https://jsonplaceholder.typicode.com/posts)
 
-### Reference Documentation
+###### Features
+
+- [x] Get all posts
+- [ ] Get one post (Path parameter)
+- [ ] Create new post (POST)
+- [ ] Update existing post (PUT)
+- [ ] Update part of existing post (PATCH)
+- [ ] Delete post (DELETE)
+- [ ] Get all posts using userId (Query parameters)
+- [x] Retry when error occur (Retryable)
+- [x] Configure timeout
+
+###### Make it run
+
+- `mvn clean install` to build
+- `mvn spring-boot:run` to run
+- `curl http://localhost:8080/posts`
+
+---
+
+### Spring Reference Documentation
 
 For further reference, please consider the following sections:
 
