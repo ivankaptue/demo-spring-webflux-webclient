@@ -21,6 +21,13 @@ public class ExceptionController {
     @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
     public ResponseEntity<String> handlePostApiException(PostApiException ex) {
         logger.info("Response body : " + ex.getResponseBody());
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Service unavailable. Code : " + ex.getStatus());
+
+        var status = ex.getStatus();
+        if (ex.getCause() instanceof PostApiException) {
+            var e = (PostApiException) ex.getCause();
+            status = e.getStatus();
+        }
+
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Service unavailable. Code : " + status);
     }
 }

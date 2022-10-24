@@ -66,14 +66,12 @@ public class PostRestClient {
             return response.bodyToMono(Post[].class).map(List::of);
         }
 
-        return Mono.error(buildError(response));
+        return buildError(response);
     }
 
-    private PostApiException buildError(ClientResponse response) {
-        return new PostApiException("Error when calling posts api", response.statusCode(), extractErrorBody(response));
-    }
-
-    private String extractErrorBody(ClientResponse response) {
-        return response.bodyToMono(String.class).block();
+    private <T> Mono<T> buildError(ClientResponse response) {
+        return response
+            .bodyToMono(String.class)
+            .flatMap(body -> Mono.error(new PostApiException("Error when calling posts api", response.statusCode(), body)));
     }
 }
