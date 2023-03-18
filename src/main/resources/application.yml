@@ -1,7 +1,7 @@
 app:
     rest:
         posts:
-            base-url: https://jsonplaceholder.typicode.com/
+            base-url: http://jsonplaceholder.typicode.com/sdfsdf
             endpoint: posts
             retry.max-attempts: 3
 

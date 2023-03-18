@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
@@ -36,8 +37,9 @@ public class PostRestClient {
     public List<Post> getAllPosts() {
         return this.webClient.get()
             .uri(uriBuilder -> uriBuilder.path(postEndpoint).build())
-            .exchangeToMono(this::getAllPostHandler)
+            .exchangeToFlux(this::getAllPostHandler)
             .retryWhen(retryWhen())
+            .collectList()
             .doOnError(PostApiException.class, this::logError)
             .doOnSuccess(this::logFindAllPostEnd)
             .block();
@@ -61,17 +63,18 @@ public class PostRestClient {
         logger.error("Calling posts API terminated with error", ex);
     }
 
-    private Mono<List<Post>> getAllPostHandler(ClientResponse response) {
+    private Flux<Post> getAllPostHandler(ClientResponse response) {
         if (HttpStatus.OK.equals(response.statusCode())) {
-            return response.bodyToMono(Post[].class).map(List::of);
+//            return response.bodyToMono(Post[].class).map(List::of);
+            return response.bodyToFlux(Post.class);
         }
 
         return buildError(response);
     }
 
-    private <T> Mono<T> buildError(ClientResponse response) {
+    private <T> Flux<T> buildError(ClientResponse response) {
         return response
-            .bodyToMono(String.class)
+            .bodyToFlux(String.class)
             .flatMap(body ->
                 response.createException().flatMap(ex ->
                     Mono.error(new PostApiException("Error when calling posts api", response.statusCode(), body, ex))));
