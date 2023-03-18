@@ -1,6 +1,6 @@
 package com.klid.demo_spring_webflux_webclient.exception;
 
-import com.klid.demo_spring_webflux_webclient.rest.PostApiException;
+import com.klid.demo_spring_webflux_webclient.service.rest.PostApiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

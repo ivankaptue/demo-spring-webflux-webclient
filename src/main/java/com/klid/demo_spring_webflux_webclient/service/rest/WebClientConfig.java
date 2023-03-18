@@ -1,4 +1,4 @@
-package com.klid.demo_spring_webflux_webclient.rest;
+package com.klid.demo_spring_webflux_webclient.service.rest;
 
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;

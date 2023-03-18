@@ -1,4 +1,4 @@
-package com.klid.demo_spring_webflux_webclient.rest;
+package com.klid.demo_spring_webflux_webclient.service.rest;
 
 import com.klid.demo_spring_webflux_webclient.model.Post;
 import org.slf4j.Logger;
@@ -23,14 +23,14 @@ public class PostRestClient {
     private static final Logger logger = LoggerFactory.getLogger(PostRestClient.class);
 
     private final WebClient webClient;
-    private final String postEndpoint;
 
-    public PostRestClient(
-        @Qualifier("postWebClient") WebClient webClient,
-        @Value("${app.rest.posts.endpoint}") String postEndpoint
-    ) {
+    @Value("${app.rest.posts.endpoint}")
+    private String postEndpoint;
+    @Value("${app.rest.posts.retry.max-attempts}")
+    private long maxAttempts;
+
+    public PostRestClient(@Qualifier("postWebClient") WebClient webClient) {
         this.webClient = webClient;
-        this.postEndpoint = postEndpoint;
     }
 
     public List<Post> getAllPosts() {
@@ -44,9 +44,9 @@ public class PostRestClient {
     }
 
     private Retry retryWhen() {
-        var maxAttempts = 3;
         return Retry
             .max(maxAttempts)
+            .filter(ex -> ex instanceof PostApiException && ((PostApiException) ex).getStatus() == HttpStatus.SERVICE_UNAVAILABLE)
             .doBeforeRetry(retrySignal -> logger.info("Before retry : " + retrySignal))
             .doAfterRetry(retrySignal -> logger.info("After retry : " + retrySignal))
             .onRetryExhaustedThrow((retryBackoffSpec, retrySignal) ->
@@ -58,7 +58,7 @@ public class PostRestClient {
     }
 
     private void logError(PostApiException ex) {
-        logger.error("Error logger", ex);
+        logger.error("Calling posts API terminated with error", ex);
     }
 
     private Mono<List<Post>> getAllPostHandler(ClientResponse response) {
@@ -72,6 +72,8 @@ public class PostRestClient {
     private <T> Mono<T> buildError(ClientResponse response) {
         return response
             .bodyToMono(String.class)
-            .flatMap(body -> Mono.error(new PostApiException("Error when calling posts api", response.statusCode(), body)));
+            .flatMap(body ->
+                response.createException().flatMap(ex ->
+                    Mono.error(new PostApiException("Error when calling posts api", response.statusCode(), body, ex))));
     }
 }

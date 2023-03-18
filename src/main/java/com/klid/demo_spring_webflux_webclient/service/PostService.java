@@ -1,7 +1,7 @@
 package com.klid.demo_spring_webflux_webclient.service;
 
 import com.klid.demo_spring_webflux_webclient.model.Post;
-import com.klid.demo_spring_webflux_webclient.rest.PostRestClient;
+import com.klid.demo_spring_webflux_webclient.service.rest.PostRestClient;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

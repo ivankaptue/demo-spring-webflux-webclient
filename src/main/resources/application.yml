@@ -3,4 +3,5 @@ app:
         posts:
             base-url: https://jsonplaceholder.typicode.com/
             endpoint: posts
+            retry.max-attempts: 3
 

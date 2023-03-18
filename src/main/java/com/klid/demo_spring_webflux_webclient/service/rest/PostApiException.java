@@ -1,4 +1,4 @@
-package com.klid.demo_spring_webflux_webclient.rest;
+package com.klid.demo_spring_webflux_webclient.service.rest;
 
 import org.springframework.http.HttpStatus;
 
@@ -14,8 +14,8 @@ public class PostApiException extends RuntimeException {
         super(message, t);
     }
 
-    public PostApiException(String message, HttpStatus status, String responseBody) {
-        super(message);
+    public PostApiException(String message, HttpStatus status, String responseBody, Throwable throwable) {
+        super(message, throwable);
         this.status = status;
         this.responseBody = responseBody;
     }
