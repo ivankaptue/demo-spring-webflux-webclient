@@ -21,4 +21,8 @@ public class PostService {
     public List<Post> findAllPosts() {
         return postRestClient.getAllPosts();
     }
+
+    public Post findOnePost(int id) {
+        return postRestClient.getOnePost(id).orElseThrow();
+    }
 }

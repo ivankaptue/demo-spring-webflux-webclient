@@ -1,7 +1,14 @@
 app:
+    performance:
+        # can take two values: runnable or callable
+        service: callable
+        count: 100
+        postId: 1
+        threads: 1
     rest:
         posts:
-            base-url: http://jsonplaceholder.typicode.com/sdfsdf
+            base-url: http://jsonplaceholder.typicode.com
             endpoint: posts
             retry.max-attempts: 3
-
+server:
+    port: 8081

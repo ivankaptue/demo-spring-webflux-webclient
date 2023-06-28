@@ -1,8 +1,5 @@
 package com.klid.demo_spring_webflux_webclient.service.rest;
 
-import io.netty.channel.ChannelOption;
-import io.netty.handler.timeout.ReadTimeoutHandler;
-import io.netty.handler.timeout.WriteTimeoutHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +10,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 
 import java.time.Duration;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author Ivan Kaptue
@@ -21,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 public class WebClientConfig {
 
-    private final long timeoutMillis = 500;
+    private static final long TIMEOUT_MILLIS = 2000;
 
     @Bean("postWebClient")
     public WebClient webClient(
@@ -39,10 +35,10 @@ public class WebClientConfig {
 
     private HttpClient createHttpClient() {
         return HttpClient.create()
-            .responseTimeout(Duration.ofMillis(timeoutMillis))
-            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, (int) timeoutMillis)
-            .doOnConnected(connection -> connection
-                .addHandlerLast(new ReadTimeoutHandler(timeoutMillis, TimeUnit.MILLISECONDS))
-                .addHandlerLast(new WriteTimeoutHandler(timeoutMillis, TimeUnit.MILLISECONDS)));
+            .responseTimeout(Duration.ofMillis(TIMEOUT_MILLIS));
+//            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, (int) TIMEOUT_MILLIS)
+//            .doOnConnected(connection -> connection
+//                .addHandlerLast(new ReadTimeoutHandler(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS))
+//                .addHandlerLast(new WriteTimeoutHandler(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)));
     }
 }
